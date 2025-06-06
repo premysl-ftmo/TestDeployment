@@ -16,9 +16,9 @@ docker build app:
   stage: docker
   image: docker:20.10.16
   needs: ["package app"]
-  services:
-    - name: docker:20.10.16-dind
-      alias: docker
+  # services:
+  #   - name: docker:20.10.16-dind
+  #     alias: docker
   before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
