@@ -2,10 +2,9 @@ stages:
   - package
   - docker
 
-image: mcr.microsoft.com/dotnet/sdk:9.0-noble
-
 package app:
   stage: package
+  image: mcr.microsoft.com/dotnet/sdk:9.0-noble
   script:
     - dotnet publish DeploymentTest -r linux-x64 --no-self-contained -o publish
   artifacts:
@@ -15,6 +14,7 @@ package app:
 
 docker build app:
   stage: docker
+  image: docker:20.10.16
   needs: ["package app"]
   script:
     - docker build dockerfile -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA .
