@@ -23,5 +23,5 @@ docker build app:
   script:
     - docker build -f dockerfile -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA .
     - docker tag "${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA}" "${CI_REGISTRY_IMAGE}:latest"
-    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
-    - docker push $CI_REGISTRY_IMAGE:latest
+    - docker push --all-tags $CI_REGISTRY_IMAGE
+    # - docker push $CI_REGISTRY_IMAGE:latest
