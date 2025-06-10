@@ -1,6 +1,10 @@
+using Microsoft.Extensions.Options;
+using System.ComponentModel.DataAnnotations;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services.AddOptions<TestOptions>().BindConfiguration("Test").ValidateDataAnnotations().ValidateOnStart();
+builder.Services.AddSingleton(r => r.GetRequiredService<IOptions<TestOptions>>().Value);
 
 var app = builder.Build();
 
@@ -11,7 +15,7 @@ var summaries = new[]
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
 
-app.MapGet("/", () => Results.Ok("Hello World from AWS! New version."));
+app.MapGet("/", (TestOptions options) => Results.Ok($"Hello World from AWS! New version. {options.TestString}!"));
 
 app.MapGet("/weatherforecast", () =>
 {
@@ -31,4 +35,10 @@ app.Run();
 internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+}
+
+class TestOptions
+{
+    [Required]
+    public required string TestString { get; set; }
 }
