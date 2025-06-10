@@ -26,8 +26,8 @@ docker build app:
     - docker tag "${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA}" "${CI_REGISTRY_IMAGE}:latest"
     - docker push --all-tags $CI_REGISTRY_IMAGE
 
-ECS re-deploy:
+ECS update-service:
   stage: update-service
   image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
   script:
-    - aws ecs update-service --cluster $CI_AWS_ECS_CLUSTER --service $CI_AWS_ECS_SERVICE
+    - aws ecs update-service --cluster $CI_AWS_ECS_CLUSTER --service $CI_AWS_ECS_SERVICE --force-new-deployment
