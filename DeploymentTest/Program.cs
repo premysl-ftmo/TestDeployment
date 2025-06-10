@@ -11,7 +11,7 @@ var summaries = new[]
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
 
-app.MapGet("/", () => Results.Ok("Hello World from AWS!"));
+app.MapGet("/", () => Results.Ok("Hello World from AWS! New version."));
 
 app.MapGet("/weatherforecast", () =>
 {
