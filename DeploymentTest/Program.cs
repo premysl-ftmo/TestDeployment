@@ -15,7 +15,14 @@ var summaries = new[]
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
 
-app.MapGet("/", (TestOptions options) => Results.Ok($"Hello World from AWS! New version. {options.TestString}!"));
+app.MapGet("/", (TestOptions options) =>
+{
+    return Results.Ok(new
+    {
+        Message = "Hello World!",
+        TestString = options.TestString ?? "No test string configured."
+    });
+});
 
 app.MapGet("/weatherforecast", () =>
 {
@@ -39,6 +46,5 @@ internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary
 
 class TestOptions
 {
-    [Required]
-    public required string TestString { get; set; }
+    public string? TestString { get; set; }
 }
