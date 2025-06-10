@@ -30,4 +30,4 @@ ECS re-deploy:
   stage: update-service
   image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
   script:
-    - ecs update-service --cluster $CI_AWS_ECS_CLUSTER --service $CI_AWS_ECS_SERVICE
+    - aws ecs update-service --cluster $CI_AWS_ECS_CLUSTER --service $CI_AWS_ECS_SERVICE
