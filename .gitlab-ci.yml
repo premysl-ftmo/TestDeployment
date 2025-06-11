@@ -4,6 +4,8 @@ stages:
   - update-service
 
 package app:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "stage" || $CI_COMMIT_BRANCH == "prod"'
   stage: package
   image: mcr.microsoft.com/dotnet/sdk:9.0-noble
   script:
@@ -14,6 +16,8 @@ package app:
     expire_in: 1 week
 
 docker build app:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "stage" || $CI_COMMIT_BRANCH == "prod"'
   stage: docker
   image: docker:20.10.16
   needs: ["package app"]
@@ -23,10 +27,19 @@ docker build app:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
     - docker build -f dockerfile -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA .
-    - docker tag "${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA}" "${CI_REGISTRY_IMAGE}:latest"
-    - docker push --all-tags $CI_REGISTRY_IMAGE
+    - |
+       if [ \( "${CI_COMMIT_BRANCH}" = "stage" \) -o \( "${CI_COMMIT_BRANCH}" = "prod" \) ]; then
+         TARGET_ENVIRONMENT="${CI_COMMIT_BRANCH}"
+       fi
+
+       if [ -n "${TARGET_ENVIRONMENT}" ]; then
+         docker tag "${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA}" "${CI_REGISTRY_IMAGE}:${TARGET_ENVIRONMENT}"
+         docker push --all-tags $CI_REGISTRY_IMAGE
+       fi
 
 ECS update-service:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "stage" || $CI_COMMIT_BRANCH == "prod"'
   stage: update-service
   image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
   script:
