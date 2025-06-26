@@ -64,9 +64,4 @@ internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary
 class TestOptions
 {
     public string? TestString { get; set; }
-
-    private void Tst()
-    {
-        var x = double.IsNegative(double.MaxValue) ? "Negative" : "Positive";
-    }
 }
