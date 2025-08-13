@@ -1,21 +1,9 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using StriveApi.Database;
-using System.ComponentModel.DataAnnotations;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOptions<TestOptions>().BindConfiguration("Test").ValidateDataAnnotations().ValidateOnStart();
 builder.Services.AddSingleton(r => r.GetRequiredService<IOptions<TestOptions>>().Value);
-
-builder.Services.AddDbContextPool<MtisiteContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration.GetConnectionString("MTISite"), serverOptions =>
-    {
-        serverOptions.EnableRetryOnFailure(1);
-    });
-    options.EnableSensitiveDataLogging(true);
-});
 
 var app = builder.Build();
 
@@ -35,11 +23,6 @@ app.MapGet("/", (TestOptions options) =>
     });
 });
 
-app.MapGet("/brokers", async (MtisiteContext db) =>
-{
-    var brokers = await db.BrokerDirectories.Take(1).ToListAsync();
-    return Results.Ok(brokers);
-});
 
 app.MapGet("/weatherforecast", () =>
 {
